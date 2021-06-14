@@ -2,8 +2,10 @@ import 'package:Doctor_appointment_app/boarding/enterdetails.dart';
 import 'package:Doctor_appointment_app/boarding/enterphone.dart';
 import 'package:Doctor_appointment_app/consultation.dart';
 import 'package:Doctor_appointment_app/homepage.dart';
+import 'package:Doctor_appointment_app/medical_records.dart';
 import 'package:Doctor_appointment_app/orders.dart';
 import 'package:Doctor_appointment_app/past_consultation.dart';
+import 'package:Doctor_appointment_app/pathology.dart';
 import 'package:Doctor_appointment_app/your_orders.dart';
 import 'package:Doctor_appointment_app/faqs_screen.dart';
 import 'package:Doctor_appointment_app/ready1.dart';
@@ -84,35 +86,35 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => HomePageScreen()));
               }),
-              drawertile("Appointment", Icons.mark_chat_read, () {}),
-              drawertile("Test Bookings", Icons.science, () {}),
-              drawertile("Orders", FontAwesomeIcons.box, () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => OrdersScreen()));
-              }),
-              drawertile("Consultations", FontAwesomeIcons.solidComments, () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ConsultationScreen()));
-              }),
-              drawertile("My Doctors", FontAwesomeIcons.userMd, () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => HomePage()));
-              }),
-              drawertile("Medical Report", FontAwesomeIcons.fileMedicalAlt, () {
-                // Navigator.pushReplacement(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => ConsultationScreen()));
-              }),
-              drawertile("Reminders", Icons.lock_clock, () {}),
-              drawertile("Payment", Icons.payment, () {
+
+              drawertile("Appointment", Icons.mark_chat_read, () {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) => PastConsultations()));
               }),
+              drawertile("Pathalogy", Icons.mark_chat_read, () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => PathologyScreen()));
+              }),
+              // drawertile("Test Bookings", Icons.science, () {}),
+              // drawertile("Consultations", FontAwesomeIcons.solidComments, () {
+              //   Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => ConsultationScreen()));
+              // }),
+              // drawertile("My Doctors", FontAwesomeIcons.userMd, () {
+              //   Navigator.pushReplacement(context,
+              //       MaterialPageRoute(builder: (context) => HomePage()));
+              // }),
+              drawertile("Medical Report", FontAwesomeIcons.fileMedicalAlt, () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => MedicalRecords()));
+              }),
+              // drawertile("Reminders", Icons.lock_clock, () {}),
+              // drawertile("Payment", Icons.payment, () {
+              // }),
               Divider(
                 color: Colors.grey.shade300,
                 // color: ColorPlatte.darkColor,

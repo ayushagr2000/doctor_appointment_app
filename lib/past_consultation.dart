@@ -80,7 +80,7 @@ class _PastConsultationsState extends State<PastConsultations> {
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: NetworkImage(
-                        "https://blog.practo.com/wp-content/uploads/2020/11/Banner-for-blog-001-1170x460.jpg"),
+                        "https://heritagehospitals.com/uploads/images/1557990176.jpg"),
                     fit: BoxFit.cover),
                 borderRadius: BorderRadius.circular(10)),
           ),

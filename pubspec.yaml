@@ -35,7 +35,9 @@ dependencies:
   cloud_firestore:
   shared_preferences:
   uuid:
-  date_time_picker: 1.1.0 
+  maps_launcher: 
+  date_time_picker:
+  share:
 
 
 dev_dependencies:

@@ -21,16 +21,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
       drawer: CustomDrawer(),
       appBar: AppBar(
         backgroundColor: ColorPlatte.primaryColor,
-        actions: [
-          GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => YourOrderPage()));
-              },
-              child: Icon(
-                Icons.card_travel,
-              ))
-        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

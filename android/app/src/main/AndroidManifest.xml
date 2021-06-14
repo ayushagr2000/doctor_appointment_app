@@ -7,7 +7,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Doctor_appointment_app"
+        android:label="Doctor Appointment App"
         android:icon="@mipmap/logo">
         <activity
             android:name=".MainActivity"

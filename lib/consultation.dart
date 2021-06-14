@@ -1,3 +1,4 @@
+import 'package:Doctor_appointment_app/book_success.dart';
 import 'package:Doctor_appointment_app/ready1.dart';
 import 'package:Doctor_appointment_app/select_speciality.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
@@ -556,7 +557,10 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                           date == "") {
                         _showSnackMessage("Age field Can't be empty");
                       } else {
-                        FirebaseFirestore.instance.collection("Bookings").add({
+                        FirebaseFirestore.instance
+                            .collection("Bookings")
+                            .doc(bookid)
+                            .set({
                           "booking_id": bookid,
                           "user_id": userid,
                           "doctor_id": widget.doctorid,
@@ -580,6 +584,16 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                           print("Non Orignal");
                         }
                       }
+
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookingSuccessful(
+                                    doctorid: widget.doctorid,
+                                    bookid: bookid,
+                                    // doctorname: widget.name,
+                                    // speciality: widget.speciality,
+                                  )));
 
                       // FirebaseFirestore.instance.collection("Doctors").add({
                       //   "doctor_id": "4464",
