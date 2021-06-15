@@ -83,6 +83,7 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
     Fluttertoast.showToast(
       msg: "ERROR: " + response.code.toString() + " - " + response.message,
     );
+
     print("error");
   }
 
