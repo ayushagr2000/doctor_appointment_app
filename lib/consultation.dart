@@ -5,14 +5,17 @@ import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 class ConsultationScreen extends StatefulWidget {
-  String doctorid, doctorname, speciality;
-  ConsultationScreen({this.doctorid, this.doctorname, this.speciality});
+  String doctorid, doctorname, speciality, appointmentFees;
+  ConsultationScreen(
+      {this.doctorid, this.doctorname, this.speciality, this.appointmentFees});
 
   @override
   _ConsultationScreenState createState() => _ConsultationScreenState();
@@ -38,11 +41,54 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
 
   String name, phone, userimg, userid, address, date, time;
 
+  Razorpay _razorpay;
   @override
   void initState() {
     super.initState();
     getprefab();
     // username = _age.text;
+
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  void openCheckout(String fare) async {
+    var options = {
+      'key': "rzp_test_ptgQM3HDw9Vly0",
+      'amount': fare + "00",
+      'name': name,
+      'description': 'Payment for Doctor Appointment',
+      'prefill': {'contact': phone, 'email': 'test@razorpay.com'},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e);
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(msg: "SUCCESS: " + response.paymentId);
+    makeAppointment();
+    print("success");
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+      msg: "ERROR: " + response.code.toString() + " - " + response.message,
+    );
+    print("error");
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(msg: "EXTERNAL_WALLET: " + response.walletName);
+    print("external");
   }
 
   getprefab() async {
@@ -550,50 +596,19 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                     color: ColorPlatte.secondaryColor,
                     onPressed: () {
-                      var uuid = Uuid();
-                      var bookid = uuid.v1();
                       if (_ageController.text == "" ||
                           time == "" ||
                           date == "") {
                         _showSnackMessage("Age field Can't be empty");
                       } else {
-                        FirebaseFirestore.instance
-                            .collection("Bookings")
-                            .doc(bookid)
-                            .set({
-                          "booking_id": bookid,
-                          "user_id": userid,
-                          "doctor_id": widget.doctorid,
-                          "doctor_name": widget.doctorname,
-                          "name": name,
-                          "patient_name": userimg,
-                          "booking_speciality": widget.speciality,
-                          "booking_time": time,
-                          "booking_date": date,
-                          "patient":
-                              patientindex == 0 ? name : _patientName.text,
-                          "age": _ageController.text,
-                          "gender": isMale == true ? "Male" : "Female",
-                          "phone": phone,
-                          "Address": address,
-                          "timestamp": Timestamp.now(),
-                        });
-
                         if (patientindex == 0) {
                         } else {
                           print("Non Orignal");
                         }
-                      }
 
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookingSuccessful(
-                                    doctorid: widget.doctorid,
-                                    bookid: bookid,
-                                    // doctorname: widget.name,
-                                    // speciality: widget.speciality,
-                                  )));
+// trigger payment
+                        openCheckout(widget.appointmentFees);
+                      }
 
                       // FirebaseFirestore.instance.collection("Doctors").add({
                       //   "doctor_id": "4464",
@@ -612,7 +627,7 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                       // });
                     },
                     child: Text(
-                      "Continue",
+                      "Go to Payment",
                       style: GoogleFonts.montserrat(
                           color: Colors.white, fontSize: 20),
                     )),
@@ -629,6 +644,40 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
   //     MaterialPageRoute(
   //         builder: (context) =>
   //             HomePageScreen()));
+
+  void makeAppointment() {
+    var uuid = Uuid();
+    var bookid = uuid.v1();
+    FirebaseFirestore.instance.collection("Bookings").doc(bookid).set({
+      "booking_id": bookid,
+      "user_id": userid,
+      "doctor_id": widget.doctorid,
+      "doctor_name": widget.doctorname,
+      "name": name,
+      "patient_name": userimg,
+      "booking_speciality": widget.speciality,
+      "booking_time": time,
+      "booking_date": date,
+      "booking_fees": widget.appointmentFees,
+      "patient": patientindex == 0 ? name : _patientName.text,
+      "age": _ageController.text,
+      "gender": isMale == true ? "Male" : "Female",
+      "phone": phone,
+      "Address": address,
+      "timestamp": Timestamp.now(),
+    });
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BookingSuccessful(
+                  doctorid: widget.doctorid,
+                  bookid: bookid,
+                  // doctorname: widget.name,
+                  // speciality: widget.speciality,
+                )));
+  }
+
   Widget patient(String name, int index) {
     return GestureDetector(
       onTap: () {

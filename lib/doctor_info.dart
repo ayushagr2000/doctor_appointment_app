@@ -140,6 +140,7 @@ class _DoctorsInfoState extends State<DoctorsInfo> {
                                       doctorid: widget.doctorid,
                                       doctorname: widget.name,
                                       speciality: widget.speciality,
+                                      appointmentFees: widget.fees,
                                     )));
                       },
                       child: Container(

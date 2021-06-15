@@ -38,6 +38,8 @@ dependencies:
   maps_launcher: 
   date_time_picker:
   share:
+  razorpay_flutter:
+  fluttertoast:
 
 
 dev_dependencies:
