@@ -1,8 +1,10 @@
-import 'package:Doctor_appointment_app/boarding/enterdetails.dart';
-import 'package:Doctor_appointment_app/homepage.dart';
+import 'package:Doctor_appointment_app/PatientSide/boarding/enterdetails.dart';
+import 'package:Doctor_appointment_app/PatientSide/homepage.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EnterPhone extends StatefulWidget {
   @override
@@ -183,14 +185,46 @@ class _EnterPhoneState extends State<EnterPhone> {
 
                                     _showSnackMessage("Please fill Phone");
                                   } else {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => EnterDetails(
-                                                  avatarurl:
-                                                      "https://image.freepik.com/free-vector/portrait-african-american-woman-profile-avatar-young-black-girl_102172-418.jpg",
-                                                  phone: _phoneController.text,
-                                                )));
+                                    FirebaseFirestore.instance
+                                        .collection("Users")
+                                        .where("phone",
+                                            isEqualTo: _phoneController.text
+                                                .toLowerCase())
+                                        .get()
+                                        .then((value) => {
+                                              if (value.docs.length == 1)
+                                                {
+                                                  setprefab(
+                                                      value.docs[0]["userid"],
+                                                      value.docs[0]["name"],
+                                                      value.docs[0]["phone"],
+                                                      value.docs[0]["imgurl"]),
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              HomePageScreen())),
+                                                }
+                                              else if (value.docs.length == 0)
+                                                {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              EnterDetails(
+                                                                avatarurl:
+                                                                    "https://image.freepik.com/free-vector/portrait-african-american-woman-profile-avatar-young-black-girl_102172-418.jpg",
+                                                                phone:
+                                                                    _phoneController
+                                                                        .text,
+                                                              )))
+                                                }
+                                              else
+                                                {
+                                                  _showSnackMessage(
+                                                      "Something went wrong! Contact Admin")
+                                                }
+                                            });
                                   }
                                 },
                                 child: Text(
@@ -209,5 +243,18 @@ class _EnterPhoneState extends State<EnterPhone> {
         ),
       ),
     );
+  }
+
+  setprefab(String userid, name, phone, avatarurl) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("userid", userid);
+    prefs.setString("name", name);
+    prefs.setString("userimg", avatarurl);
+
+    prefs.setString("Phone", phone);
+    // prefs.setString("Address", _address.text);
+    prefs.setString("LoggedStatus", "patientIn").then((value) {
+      print("Prefs Set!");
+    });
   }
 }

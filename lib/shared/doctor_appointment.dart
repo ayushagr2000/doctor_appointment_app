@@ -1,3 +1,4 @@
+import 'package:Doctor_appointment_app/DoctorSide/homepage.dart';
 import 'package:Doctor_appointment_app/PatientSide/boarding/enterphone.dart';
 import 'package:Doctor_appointment_app/PatientSide/homepage.dart';
 import 'package:Doctor_appointment_app/PatientSide/medical_records.dart';
@@ -8,19 +9,20 @@ import 'package:Doctor_appointment_app/PatientSide/your_orders.dart';
 import 'package:Doctor_appointment_app/PatientSide/faqs_screen.dart';
 import 'package:Doctor_appointment_app/PatientSide/ready1.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
+import 'package:Doctor_appointment_app/switch.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CustomDrawer extends StatefulWidget {
+class DoctorCustomDrawer extends StatefulWidget {
   @override
-  _CustomDrawerState createState() => _CustomDrawerState();
+  _DoctorCustomDrawerState createState() => _DoctorCustomDrawerState();
 }
 
-class _CustomDrawerState extends State<CustomDrawer> {
-  String username, phone, userimg;
+class _DoctorCustomDrawerState extends State<DoctorCustomDrawer> {
+  String username;
 
   @override
   void initState() {
@@ -32,19 +34,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
   getprefab() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      username = prefs.getString("name");
-      phone = prefs.getString("Phone");
-      userimg = prefs.getString("userimg");
-      print("value is" + userimg.toString());
+      username = prefs.getString("doctorName");
+      // phone = prefs.getString("Phone");
+      // userimg = prefs.getString("userimg");
+      // print("value is" + userimg.toString());
     });
   }
 
   setprefab() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setString("LoggedStatus", null).then((value) {
-      print("object");
-    });
+    prefs.setString("LoggedStatus", null).then((value) {});
   }
 
   _launchURL(String url) async {
@@ -76,27 +76,27 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     color: ColorPlatte.primaryColor,
                   ),
                   currentAccountPicture: CircleAvatar(
-                    backgroundImage: NetworkImage(userimg),
-                  ),
+                      // backgroundImage: NetworkImage(userimg),
+                      ),
                   accountName: Text(username.toString(),
                       style: GoogleFonts.montserrat(color: Colors.white)),
-                  accountEmail: Text(phone.toString(),
+                  accountEmail: Text("Stay Safe",
                       style: GoogleFonts.montserrat(color: Colors.white))),
               drawertile("Home", Icons.home, () {
                 Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => HomePageScreen()));
+                    MaterialPageRoute(builder: (context) => DoctorHomePage()));
               }),
 
-              drawertile("Appointment", Icons.mark_chat_read, () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PastConsultations()));
-              }),
-              drawertile("Pathalogy", Icons.mark_chat_read, () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => PathologyScreen()));
-              }),
+              // drawertile("Appointment", Icons.mark_chat_read, () {
+              //   Navigator.pushReplacement(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => PastConsultations()));
+              // }),
+              // drawertile("Pathalogy", Icons.mark_chat_read, () {
+              //   Navigator.pushReplacement(context,
+              //       MaterialPageRoute(builder: (context) => PathologyScreen()));
+              // }),
               // drawertile("Test Bookings", Icons.science, () {}),
               // drawertile("Consultations", FontAwesomeIcons.solidComments, () {
               //   Navigator.push(
@@ -108,33 +108,35 @@ class _CustomDrawerState extends State<CustomDrawer> {
               //   Navigator.pushReplacement(context,
               //       MaterialPageRoute(builder: (context) => HomePage()));
               // }),
-              drawertile("Medical Report", FontAwesomeIcons.fileMedicalAlt, () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => MedicalRecords()));
-              }),
+              // drawertile("Medical Report", FontAwesomeIcons.fileMedicalAlt, () {
+              //   Navigator.pushReplacement(context,
+              //       MaterialPageRoute(builder: (context) => MedicalRecords()));
+              // }),
               // drawertile("Reminders", Icons.lock_clock, () {}),
               // drawertile("Payment", Icons.payment, () {
               // }),
-              Divider(
-                color: Colors.grey.shade300,
-                // color: ColorPlatte.darkColor,
-                // height: 9,
-                thickness: 10,
-              ),
-              drawergreytile("Need Help?", FontAwesomeIcons.questionCircle, () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => Faqscreen()));
-              }),
-              drawergreytile("Settings", Icons.settings, () {}),
-              drawergreytile(
-                  "Like Us? Give 5 stars", FontAwesomeIcons.thumbsUp, () {}),
-              drawergreytile(
-                  "Are you a Doctor?", FontAwesomeIcons.userMd, () {}),
+              // Divider(
+              //   color: Colors.grey.shade300,
+              //   // color: ColorPlatte.darkColor,
+              //   // height: 9,
+              //   thickness: 10,
+              // ),
+              // drawergreytile("Need Help?", FontAwesomeIcons.questionCircle, () {
+              //   Navigator.pushReplacement(context,
+              //       MaterialPageRoute(builder: (context) => Faqscreen()));
+              // }),
+              // drawergreytile("Settings", Icons.settings, () {}),
+              // drawergreytile(
+              //     "Like Us? Give 5 stars", FontAwesomeIcons.thumbsUp, () {}),
+              // drawergreytile(
+              //     "Are you a Doctor?", FontAwesomeIcons.userMd, () {}),
               drawergreytile("Log Out", FontAwesomeIcons.signOutAlt, () {
-                setprefab();
-                print("User Logged out!");
                 Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => EnterPhone()));
+                        MaterialPageRoute(builder: (context) => SwitchScreen()))
+                    .then((value) {
+                  setprefab();
+                  print("User Logged out!");
+                });
               }),
             ],
           ),

@@ -1,4 +1,4 @@
-import 'package:Doctor_appointment_app/consultation.dart';
+import 'package:Doctor_appointment_app/PatientSide/consultation.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

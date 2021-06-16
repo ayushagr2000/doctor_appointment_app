@@ -1,4 +1,4 @@
-import 'package:Doctor_appointment_app/boarding/enterdetails.dart';
+import 'package:Doctor_appointment_app/PatientSide/boarding/enterdetails.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -33,13 +33,13 @@ class _ChoosePhotoState extends State<ChoosePhoto> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               avatar(
-                  "https://image.freepik.com/free-vector/portrait-african-american-woman-profile-avatar-young-black-girl_102172-418.jpg",
+                  "https://cdn1.vectorstock.com/i/1000x1000/58/30/patient-broken-arm-avatar-filled-outline-icon-vector-22675830.jpg",
                   1),
               avatar(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQvwKcnJNXEwCtw_YffU6e6LjytqqIjNq1LQ&usqp=CAU",
+                  "https://cdn0.iconfinder.com/data/icons/doctors-specialist-1/60/patient__avatar__medical__man__boy-512.png",
                   2),
               avatar(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf3xMoPQzifO1D3nBC4dsCVv4D8zXNXKZ3mw&usqp=CAU",
+                  "https://cdn4.iconfinder.com/data/icons/medical-filled-outline-10/128/avatar_people_patient_boy_fever_sick_illness-512.png",
                   3),
             ],
           ),
@@ -50,7 +50,7 @@ class _ChoosePhotoState extends State<ChoosePhoto> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               avatar(
-                  "https://image.freepik.com/free-vector/portrait-caucasian-woman-profile-with-long-hair-avatar-young-white-girl_102172-419.jpg",
+                  "https://cdn2.iconfinder.com/data/icons/avatar-and-emotion-1/64/28-Flushed_1-512.png",
                   4),
               avatar(
                   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3d_r0FuoxGMubbcgZgSsabKh54jHe1dcHCQ&usqp=CAU",

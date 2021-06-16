@@ -1,5 +1,5 @@
-import 'package:Doctor_appointment_app/boarding/choose_avatar.dart';
-import 'package:Doctor_appointment_app/homepage.dart';
+import 'package:Doctor_appointment_app/PatientSide/boarding/choose_avatar.dart';
+import 'package:Doctor_appointment_app/PatientSide/homepage.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -41,18 +41,14 @@ class _EnterDetailsState extends State<EnterDetails> {
   }
 
   setprefab(id) async {
-    // var random = Random();
-    // var userid = random.nextInt(100000);
-
-    // print(userid);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("userid", id.toString());
     prefs.setString("name", _name.text);
     prefs.setString("userimg", avatar);
 
     prefs.setString("Phone", widget.phone);
-    prefs.setString("Address", _address.text);
-    prefs.setBool("isLogged", true).then((value) {
+    // prefs.setString("Address", _address.text);
+    prefs.setString("LoggedStatus", "patientIn").then((value) {
       print("Prefs Set!");
     });
   }
@@ -63,7 +59,11 @@ class _EnterDetailsState extends State<EnterDetails> {
       key: _scaffoldKey,
       body: SingleChildScrollView(
         child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(
+              height: 150,
+            ),
             Column(
               children: [
                 SizedBox(
@@ -110,7 +110,7 @@ class _EnterDetailsState extends State<EnterDetails> {
                   height: 20,
                 ),
                 input(_name, "Name", 1),
-                input(_address, "Address", 4),
+                // input(_address, "Address", 4),
                 SizedBox(
                   height: 40,
                 ),
@@ -120,7 +120,7 @@ class _EnterDetailsState extends State<EnterDetails> {
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: FlatButton(
                     onPressed: () {
-                      if (_name.text == "" || _address.text == "") {
+                      if (_name.text == "") {
                         _showSnackMessage("Please Fill the Details");
                       } else {
                         // Navigator.pop(context);
@@ -131,12 +131,13 @@ class _EnterDetailsState extends State<EnterDetails> {
                         var uuid = Uuid();
                         var id = uuid.v4();
                         setprefab(id);
+
                         FirebaseFirestore.instance.collection("Users").add({
                           "userid": id,
                           "phone": widget.phone,
                           "imgurl": avatar,
                           "name": _name.text,
-                          "address": _address.text,
+                          // "address": _address.text,
                           "gender": "",
                           "age": "",
                         }).then((value) {
@@ -151,7 +152,7 @@ class _EnterDetailsState extends State<EnterDetails> {
                     },
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
-                        side: BorderSide(color: ColorPlatte.darkColor)),
+                        side: BorderSide(color: ColorPlatte.primaryColor)),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       child: Text(

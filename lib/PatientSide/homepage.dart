@@ -1,5 +1,5 @@
-import 'package:Doctor_appointment_app/doctor_info.dart';
-import 'package:Doctor_appointment_app/premium.dart';
+import 'package:Doctor_appointment_app/PatientSide/doctor_info.dart';
+import 'package:Doctor_appointment_app/PatientSide/premium.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:Doctor_appointment_app/shared/custom_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -117,7 +117,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         itemCount: snapshot.data.docs.length,
                         itemBuilder: (context, index) {
                           return doctortile(
-                            snapshot.data.docs[index]["doctor_id"],
+                            snapshot.data.docs[index].id,
                             snapshot.data.docs[index]["doctor_img"],
                             snapshot.data.docs[index]["name"],
                             snapshot.data.docs[index]["specialization"],

@@ -1,19 +1,21 @@
-import 'package:Doctor_appointment_app/orders.dart';
+import 'package:Doctor_appointment_app/PatientSide/doctor_info.dart';
+import 'package:Doctor_appointment_app/PatientSide/premium.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:Doctor_appointment_app/shared/custom_drawer.dart';
 import 'package:Doctor_appointment_app/shared/post_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:share/share.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class MedicalRecords extends StatefulWidget {
+class PathologyScreen extends StatefulWidget {
   @override
-  _MedicalRecordsState createState() => _MedicalRecordsState();
+  _PathologyScreenState createState() => _PathologyScreenState();
 }
 
-class _MedicalRecordsState extends State<MedicalRecords> {
+class _PathologyScreenState extends State<PathologyScreen> {
   String username, phone, userimg, userid;
   @override
   void initState() {
@@ -30,22 +32,15 @@ class _MedicalRecordsState extends State<MedicalRecords> {
       phone = prefs.getString("Phone");
 
       userimg = prefs.getString("userimg");
-      print("value is " + userid.toString());
+      print("value is" + userimg.toString());
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => OrdersScreen()));
-        },
-        child: Icon(Icons.add),
-      ),
       appBar: AppBar(
-        title: Text("Medicals Reports",
+        title: Text("Pathology Labs",
             style: GoogleFonts.montserrat(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
         // backgroundColor: ColorPlatte.primaryColor,
@@ -62,15 +57,14 @@ class _MedicalRecordsState extends State<MedicalRecords> {
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: NetworkImage(
-                        "https://resize.indiatvnews.com/en/resize/newbucket/715_-/2019/09/digilocker-1569672262.jpg"),
+                        "https://dhruvlabs.com/images/CovidBanner.jpg"),
                     fit: BoxFit.cover),
                 borderRadius: BorderRadius.circular(10)),
           ),
           Container(
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
-                    .collection("medical_records")
-                    .where("patient_id", isEqualTo: userid)
+                    .collection("pathalogy_labs")
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -79,41 +73,22 @@ class _MedicalRecordsState extends State<MedicalRecords> {
                     );
                   } else {
                     // <DocumentSnapshot> items = snapshot.data.documents;
-                    if (snapshot.data.docs.length > 0) {
-                      return ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.docs.length,
-                          itemBuilder: (context, index) {
-                            return doctortile(
-                              snapshot.data.docs[index]["record_id"],
-                              snapshot.data.docs[index]["file_url"],
-                              snapshot.data.docs[index]["record_title"],
-                              // snapshot.data.docs[index]["lab_phone"],
-                              snapshot.data.docs[index]["doctor_name"],
-                            );
-                          });
-                    } else {
-                      return Column(
-                        children: [
-                          Container(
-                            child: Image.network(
-                                "https://cdn.dribbble.com/users/1168645/screenshots/3152485/no-orders_2x.png"),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "No Medical Records",
-                            style: GoogleFonts.cuprum(
-                              fontWeight: FontWeight.w500,
-                              color: ColorPlatte.primaryColor,
-                              fontSize: 24,
-                            ),
-                          ),
-                        ],
-                      );
-                    }
+
+                    return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.docs.length,
+                        itemBuilder: (context, index) {
+                          return doctortile(
+                            snapshot.data.docs[index]["lab_id"],
+                            snapshot.data.docs[index]["lab_img"],
+                            snapshot.data.docs[index]["lab_name"],
+                            snapshot.data.docs[index]["lab_phone"],
+                            snapshot.data.docs[index]["lab_address"],
+                            snapshot.data.docs[index]["lab_domain"],
+                            snapshot.data.docs[index]["lab_loc"],
+                          );
+                        });
                   }
                 }),
           ),
@@ -123,12 +98,7 @@ class _MedicalRecordsState extends State<MedicalRecords> {
   }
 
   Widget doctortile(
-    String id,
-    img,
-    name,
-    // phone,
-    address,
-  ) {
+      String id, img, name, phone, address, domain, GeoPoint loc) {
     return GestureDetector(
       onTap: () {
         // Navigator.push(
@@ -195,14 +165,14 @@ class _MedicalRecordsState extends State<MedicalRecords> {
                         fontSize: 19,
                         fontWeight: FontWeight.w500)),
 
-                // Text(
-                //   domain,
-                //   overflow: TextOverflow.ellipsis,
-                //   style: GoogleFonts.montserrat(
-                //       color: Color(0xffFC9535), fontSize: 19),
-                // ),
                 Text(
-                  "by " + address,
+                  domain,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.montserrat(
+                      color: Color(0xffFC9535), fontSize: 19),
+                ),
+                Text(
+                  address,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.montserrat(
                       color: Color(0xffFC9535), fontSize: 12),
@@ -214,15 +184,31 @@ class _MedicalRecordsState extends State<MedicalRecords> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Share.share(
-                          'Report name: $name\nlink: $img',
-                        );
+                        launch("tel:" + phone);
                       },
                       child: CircleAvatar(
                         minRadius: 15,
                         maxRadius: 15,
                         child: Icon(
-                          Icons.share,
+                          Icons.call,
+                          size: 17,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // MapsLauncher.launchCoordinates(37.4220041, -122.0862462);
+                        MapsLauncher.launchCoordinates(
+                            loc.latitude, loc.longitude, "jjj");
+                      },
+                      child: CircleAvatar(
+                        minRadius: 15,
+                        maxRadius: 15,
+                        child: Icon(
+                          Icons.directions,
                           size: 17,
                         ),
                       ),

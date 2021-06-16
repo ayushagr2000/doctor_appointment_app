@@ -1,10 +1,12 @@
-import 'package:Doctor_appointment_app/book_success.dart';
-import 'package:Doctor_appointment_app/ready1.dart';
-import 'package:Doctor_appointment_app/select_speciality.dart';
+import 'package:Doctor_appointment_app/PatientSide/book_success.dart';
+import 'package:Doctor_appointment_app/PatientSide/homepage.dart';
+import 'package:Doctor_appointment_app/PatientSide/ready1.dart';
+import 'package:Doctor_appointment_app/PatientSide/select_speciality.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -41,18 +43,44 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
 
   String name, phone, userimg, userid, address, date, time;
 
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   Razorpay _razorpay;
   @override
   void initState() {
     super.initState();
     getprefab();
     // username = _age.text;
+    super.initState();
+    // var initializationSettingsAndroid = AndroidInitializationSettings('logo');
+    // // var initializationSettingsIOs = IOSInitializationSettings();
+    // var initSetttings =
+    //     InitializationSettings(android: initializationSettingsAndroid);
 
+    // flutterLocalNotificationsPlugin.initialize(initSetttings,
+    //     onSelectNotification: onSelectNotification);
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
+
+  // Future onSelectNotification(String payload) {
+  //   Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+  //     return HomePageScreen();
+  //   }));
+  // }
+
+  // showNotification() async {
+  //   var android = AndroidNotificationDetails('id', 'channel ', 'description',
+  //       priority: Priority.high, importance: Importance.max);
+  //   var iOS = IOSNotificationDetails();
+  //   var platform = new NotificationDetails(android: android);
+  //   await flutterLocalNotificationsPlugin.show(
+  //       0, 'Flutter devs', 'Flutter Local Notification Demo', platform,
+  //       payload: 'Welcome to the Local Notification demo');
+  // }
 
   void openCheckout(String fare) async {
     var options = {
@@ -608,6 +636,8 @@ class _ConsultationScreenState extends State<ConsultationScreen> {
                         }
 
 // trigger payment
+
+                        // showNotification();
                         openCheckout(widget.appointmentFees);
                       }
 

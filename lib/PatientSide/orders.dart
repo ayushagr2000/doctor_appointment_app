@@ -1,7 +1,7 @@
-import 'package:Doctor_appointment_app/consultation.dart';
+import 'package:Doctor_appointment_app/PatientSide/consultation.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:Doctor_appointment_app/shared/custom_drawer.dart';
-import 'package:Doctor_appointment_app/your_orders.dart';
+import 'package:Doctor_appointment_app/PatientSide/your_orders.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';

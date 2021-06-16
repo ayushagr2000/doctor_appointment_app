@@ -1,5 +1,5 @@
-import 'package:Doctor_appointment_app/ready1.dart';
-import 'package:Doctor_appointment_app/select_speciality.dart';
+import 'package:Doctor_appointment_app/PatientSide/ready1.dart';
+import 'package:Doctor_appointment_app/PatientSide/select_speciality.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';

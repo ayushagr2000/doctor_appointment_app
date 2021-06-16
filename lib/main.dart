@@ -1,6 +1,4 @@
-// import 'package:Doctor_appointment_app/boarding/splash.dart';
-import 'package:Doctor_appointment_app/boarding/enterphone.dart';
-import 'package:Doctor_appointment_app/boarding/splash.dart';
+import 'package:Doctor_appointment_app/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 

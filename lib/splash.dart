@@ -1,8 +1,9 @@
 import 'dart:async';
-
-import 'package:Doctor_appointment_app/boarding/enterphone.dart';
-import 'package:Doctor_appointment_app/homepage.dart';
+import 'package:Doctor_appointment_app/DoctorSide/homepage.dart';
+import 'package:Doctor_appointment_app/PatientSide/boarding/enterphone.dart';
+import 'package:Doctor_appointment_app/PatientSide/homepage.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
+import 'package:Doctor_appointment_app/switch.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,13 +15,14 @@ class Splashscreen extends StatefulWidget {
 
 class _SplashscreenState extends State<Splashscreen> {
   String name, phone, userimg, userid, address, date, time;
-  bool islogged;
+  String islogged;
 
   getprefab() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      islogged = prefs.getBool("isLogged");
-      print("value is" + userimg.toString());
+      islogged = prefs.getString("LoggedStatus");
+      // prefs.setString("LoggedStatus", "doctorIn")
+      // print("value is" + userimg.toString());fl
     });
   }
 
@@ -41,14 +43,18 @@ class _SplashscreenState extends State<Splashscreen> {
     // getuserdata();
     Timer(Duration(seconds: 3), () {
       print(islogged);
-      if (islogged == true) {
+      if (islogged == "doctorIn") {
+        print("User is already logged in");
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => DoctorHomePage()));
+      } else if (islogged == "patientIn") {
         print("User is already logged in");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => HomePageScreen()));
       } else {
         print("User is not logged in");
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => EnterPhone()));
+            context, MaterialPageRoute(builder: (context) => SwitchScreen()));
       }
     });
   }

@@ -1,21 +1,19 @@
-import 'package:Doctor_appointment_app/doctor_info.dart';
-import 'package:Doctor_appointment_app/premium.dart';
+import 'package:Doctor_appointment_app/PatientSide/orders.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:Doctor_appointment_app/shared/custom_drawer.dart';
 import 'package:Doctor_appointment_app/shared/post_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maps_launcher/maps_launcher.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class PathologyScreen extends StatefulWidget {
+class MedicalRecords extends StatefulWidget {
   @override
-  _PathologyScreenState createState() => _PathologyScreenState();
+  _MedicalRecordsState createState() => _MedicalRecordsState();
 }
 
-class _PathologyScreenState extends State<PathologyScreen> {
+class _MedicalRecordsState extends State<MedicalRecords> {
   String username, phone, userimg, userid;
   @override
   void initState() {
@@ -32,15 +30,22 @@ class _PathologyScreenState extends State<PathologyScreen> {
       phone = prefs.getString("Phone");
 
       userimg = prefs.getString("userimg");
-      print("value is" + userimg.toString());
+      print("value is " + userid.toString());
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => OrdersScreen()));
+        },
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(
-        title: Text("Pathology Labs",
+        title: Text("Medicals Reports",
             style: GoogleFonts.montserrat(color: Colors.black)),
         iconTheme: IconThemeData(color: Colors.black),
         // backgroundColor: ColorPlatte.primaryColor,
@@ -57,14 +62,15 @@ class _PathologyScreenState extends State<PathologyScreen> {
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: NetworkImage(
-                        "https://dhruvlabs.com/images/CovidBanner.jpg"),
+                        "https://resize.indiatvnews.com/en/resize/newbucket/715_-/2019/09/digilocker-1569672262.jpg"),
                     fit: BoxFit.cover),
                 borderRadius: BorderRadius.circular(10)),
           ),
           Container(
             child: StreamBuilder(
                 stream: FirebaseFirestore.instance
-                    .collection("pathalogy_labs")
+                    .collection("medical_records")
+                    .where("patient_id", isEqualTo: userid)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -73,22 +79,41 @@ class _PathologyScreenState extends State<PathologyScreen> {
                     );
                   } else {
                     // <DocumentSnapshot> items = snapshot.data.documents;
-
-                    return ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: snapshot.data.docs.length,
-                        itemBuilder: (context, index) {
-                          return doctortile(
-                            snapshot.data.docs[index]["lab_id"],
-                            snapshot.data.docs[index]["lab_img"],
-                            snapshot.data.docs[index]["lab_name"],
-                            snapshot.data.docs[index]["lab_phone"],
-                            snapshot.data.docs[index]["lab_address"],
-                            snapshot.data.docs[index]["lab_domain"],
-                            snapshot.data.docs[index]["lab_loc"],
-                          );
-                        });
+                    if (snapshot.data.docs.length > 0) {
+                      return ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: snapshot.data.docs.length,
+                          itemBuilder: (context, index) {
+                            return doctortile(
+                              snapshot.data.docs[index]["record_id"],
+                              snapshot.data.docs[index]["file_url"],
+                              snapshot.data.docs[index]["record_title"],
+                              // snapshot.data.docs[index]["lab_phone"],
+                              snapshot.data.docs[index]["doctor_name"],
+                            );
+                          });
+                    } else {
+                      return Column(
+                        children: [
+                          Container(
+                            child: Image.network(
+                                "https://cdn.dribbble.com/users/1168645/screenshots/3152485/no-orders_2x.png"),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "No Medical Records",
+                            style: GoogleFonts.cuprum(
+                              fontWeight: FontWeight.w500,
+                              color: ColorPlatte.primaryColor,
+                              fontSize: 24,
+                            ),
+                          ),
+                        ],
+                      );
+                    }
                   }
                 }),
           ),
@@ -98,7 +123,12 @@ class _PathologyScreenState extends State<PathologyScreen> {
   }
 
   Widget doctortile(
-      String id, img, name, phone, address, domain, GeoPoint loc) {
+    String id,
+    img,
+    name,
+    // phone,
+    address,
+  ) {
     return GestureDetector(
       onTap: () {
         // Navigator.push(
@@ -165,14 +195,14 @@ class _PathologyScreenState extends State<PathologyScreen> {
                         fontSize: 19,
                         fontWeight: FontWeight.w500)),
 
+                // Text(
+                //   domain,
+                //   overflow: TextOverflow.ellipsis,
+                //   style: GoogleFonts.montserrat(
+                //       color: Color(0xffFC9535), fontSize: 19),
+                // ),
                 Text(
-                  domain,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.montserrat(
-                      color: Color(0xffFC9535), fontSize: 19),
-                ),
-                Text(
-                  address,
+                  "by " + address,
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.montserrat(
                       color: Color(0xffFC9535), fontSize: 12),
@@ -184,31 +214,15 @@ class _PathologyScreenState extends State<PathologyScreen> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        launch("tel:" + phone);
+                        Share.share(
+                          'Report name: $name\nlink: $img',
+                        );
                       },
                       child: CircleAvatar(
                         minRadius: 15,
                         maxRadius: 15,
                         child: Icon(
-                          Icons.call,
-                          size: 17,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // MapsLauncher.launchCoordinates(37.4220041, -122.0862462);
-                        MapsLauncher.launchCoordinates(
-                            loc.latitude, loc.longitude, "jjj");
-                      },
-                      child: CircleAvatar(
-                        minRadius: 15,
-                        maxRadius: 15,
-                        child: Icon(
-                          Icons.directions,
+                          Icons.share,
                           size: 17,
                         ),
                       ),

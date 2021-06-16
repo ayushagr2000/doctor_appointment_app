@@ -1,4 +1,4 @@
-import 'package:Doctor_appointment_app/premium.dart';
+import 'package:Doctor_appointment_app/PatientSide/premium.dart';
 import 'package:Doctor_appointment_app/shared/colors.dart';
 import 'package:Doctor_appointment_app/shared/custom_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
